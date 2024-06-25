@@ -11,7 +11,6 @@ router.get('/user/tiktoks', async (req, res) => {
 	const {username} = req.query;
 	const userObject = await getUserInfo(username);
 	const {userId} = userObject;
-	console.log(userId)
 	const {tiktoks, hasMore, newCursor} = await getTikTokByUserId(userId)
 	try {
 		const result = await TikTok.insertMany(tiktoks);
