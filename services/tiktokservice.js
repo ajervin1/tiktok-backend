@@ -7,7 +7,7 @@ import { convertUnixTimestamp } from "../utils/helpers.js";
 
 // Stable msToken that seems to work consistently
 const msToken = "YkuQ8qGabOtryQ7k8cFpR9supZ_XCgRM2oY0mwT3xBs73yQ8vj74DPmFtX1eF83f-Zq9tTZtG0CvBeiHmjonGRVjYn5zBEQME21ytbSDbgRXpbl5LONHaysuwms9FBYwks3JTeeluaic"
-const COUNT = 20
+const COUNT = 10
 
 /**
  * Get all tiktoks associated to a user id
