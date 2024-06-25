@@ -5,6 +5,8 @@ const TikTokSchema = new mongoose.Schema({
 	_id: {type: String},
 	id: String,
 	createTime: Number,
+	createdAt: Date,
+	dateCreated : {type: Date, default: Date.now},
 	desc: String,
 	author: {
 		avatarLarger: String,
@@ -15,28 +17,8 @@ const TikTokSchema = new mongoose.Schema({
 		uniqueId: String,
 		verified: Boolean
 	},
-	challenges: [{
-		coverLarger: String,
-		desc: String,
-		id: String,
-		profileLarger: String,
-		title: String
-	}],
-	contents: [{
-		desc: String,
-		textExtra: [{
-			awemeId: String,
-			end: Number,
-			hashtagName: String,
-			isCommerce: Boolean,
-			secUid: String,
-			start: Number,
-			subType: Number,
-			type: Number,
-			userId: String,
-			userUniqueId: String
-		}]
-	}],
+	challenges: [Schema.Types.Mixed],
+	contents: [Schema.Types.Mixed],
 	music: {
 		authorName: String,
 		coverLarge: String,
@@ -53,18 +35,7 @@ const TikTokSchema = new mongoose.Schema({
 		playCount: Number,
 		shareCount: Number
 	},
-	textExtra: [{
-		awemeId: String,
-		end: Number,
-		hashtagName: String,
-		isCommerce: Boolean,
-		secUid: String,
-		start: Number,
-		subType: Number,
-		type: Number,
-		userId: String,
-		userUniqueId: String
-	}],
+	textExtra: [Schema.Types.Mixed],
 	video: {
 		downloadAddr: String,
 		duration: Number,
