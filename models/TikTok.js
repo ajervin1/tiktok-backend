@@ -43,15 +43,15 @@ const TikTokSchema = new mongoose.Schema({
 		id: String
 	}
 }, {_id: false });
-
+// TikToks By UniqueId
 TikTokSchema.statics.findByAuthorUniqueId = function(uniqueId) {
   return this.find({ 'author.uniqueId': uniqueId });
 };
-
+// Top 3 Tiktoks
 TikTokSchema.statics.findByAuthorUniqueIdSorted = function(uniqueId) {
 	return this.find({ 'author.uniqueId': uniqueId }).sort({ 'stats.playCount': -1 }).limit(3);
 };
-
+// Search Function
 TikTokSchema.statics.findDistinctAuthorsByName = function(name) {
 	return this.aggregate([
 		{
@@ -74,7 +74,73 @@ TikTokSchema.statics.findDistinctAuthorsByName = function(name) {
 		}
 	]);
 };
+// Average TikToks
+TikTokSchema.statics.getAveragePlayCountByMonthForUniqueId = function(uniqueId) {
+	return this.aggregate([
+		{
+			$match: {
+				'author.uniqueId': uniqueId
+			}
+		},
+		{
+			$group: {
+				_id: {
+					month: { $month: "$createdAt" },
+					year: { $year: "$createdAt" }
+				},
+				averagePlayCount: { $avg: "$stats.playCount" }
+			}
+		},
+		{
+			$sort: {
+				"_id.year": 1,
+				"_id.month": 1
+			}
+		},
+		{
+			$project: {
+				_id: 0,
+				month: "$_id.month",
+				year: "$_id.year",
+				averagePlayCount: 1
+			}
+		}
+	]);
+};
+// Total TikToks Monthly
+TikTokSchema.statics.getTotalPlayCountByMonthForUniqueId = function(uniqueId) {
+	return this.aggregate([
+		{
+			$match: {
+				'author.uniqueId': uniqueId
+			}
+		},
+		{
+			$group: {
+				_id: {
+					month: { $month: "$createdAt" },
+					year: { $year: "$createdAt" }
+				},
+				totalPlayCount: { $sum: "$stats.playCount" }
+			}
+		},
+		{
+			$sort: {
+				"_id.year": 1,
+				"_id.month": 1
+			}
+		},
+		{
+			$project: {
+				_id: 0,
+				month: "$_id.month",
+				year: "$_id.year",
+				totalPlayCount: 1
+			}
+		}
 
+	]);
+};
 const TikTok = mongoose.model('TikTok', TikTokSchema);
 
 export default TikTok

@@ -47,17 +47,17 @@ router.get('/user/tiktoks-top', async ( req, res ) => {
 })
 
 // Get Average Views Monthly TikToks
-router.get('/user/tiktoks-average', async ( req, res ) => {
-	const username = req.query.username;
-	const userObject = await getUserInfo(username);
-	res.send(userObject);
+router.get('/user/tiktoks-average-views', async ( req, res ) => {
+	const {username} = req.query;
+	const averagePlayCountByMonth = await TikTok.getAveragePlayCountByMonthForUniqueId(username);
+	res.send(averagePlayCountByMonth);
 })
 
 // Get Total Views Monthly
-router.get('/user/tiktoks-total', async ( req, res ) => {
-	const username = req.query.username;
-	const userObject = await getUserInfo(username);
-	res.send(userObject);
+router.get('/user/tiktoks-total-views', async ( req, res ) => {
+	const {username} = req.query;
+	const totalPlayCountByMonth = await TikTok.getTotalPlayCountByMonthForUniqueId(username);
+	res.send(totalPlayCountByMonth);
 })
 
 
