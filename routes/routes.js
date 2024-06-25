@@ -8,8 +8,9 @@ const router = express.Router();
 
 // Get all users
 router.get('/user/tiktoks', async (req, res) => {
-
-	const {userId} = req.query;
+	const {username} = req.query;
+	const userObject = await getUserInfo(username);
+	const {userId} = userObject;
 	console.log(userId)
 	const {tiktoks, hasMore, newCursor} = await getTikTokByUserId(userId)
 	try {
