@@ -44,6 +44,37 @@ const TikTokSchema = new mongoose.Schema({
 	}
 }, {_id: false });
 
+TikTokSchema.statics.findByAuthorUniqueId = function(uniqueId) {
+  return this.find({ 'author.uniqueId': uniqueId });
+};
+
+TikTokSchema.statics.findByAuthorUniqueIdSorted = function(uniqueId) {
+	return this.find({ 'author.uniqueId': uniqueId }).sort({ 'stats.playCount': -1 }).limit(3);
+};
+
+TikTokSchema.statics.findDistinctAuthorsByName = function(name) {
+	return this.aggregate([
+		{
+			$match: {
+				'author.uniqueId': new RegExp(name, 'i')
+			}
+		},
+		{
+			$group: {
+				_id: '$author.secUid',
+				author: {
+					$first: '$author'
+				}
+			}
+		},
+		{
+			$replaceRoot: {
+				newRoot: '$author'
+			}
+		}
+	]);
+};
+
 const TikTok = mongoose.model('TikTok', TikTokSchema);
 
 export default TikTok
