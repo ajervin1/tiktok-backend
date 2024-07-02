@@ -17,17 +17,6 @@ const TikTokSchema = new mongoose.Schema({
 		uniqueId: String,
 		verified: Boolean
 	},
-	challenges: [Schema.Types.Mixed],
-	contents: [Schema.Types.Mixed],
-	music: {
-		authorName: String,
-		coverLarge: String,
-		duration: Number,
-		id: String,
-		original: Boolean,
-		playUrl: String,
-		title: String
-	},
 	stats: {
 		collectCount: Number,
 		commentCount: Number,
@@ -35,7 +24,6 @@ const TikTokSchema = new mongoose.Schema({
 		playCount: Number,
 		shareCount: Number
 	},
-	textExtra: [Schema.Types.Mixed],
 	video: {
 		downloadAddr: String,
 		duration: Number,

@@ -1,6 +1,7 @@
 import express from 'express'
 import TikTok from '../models/TikTok.js'
 import { getTikTokByUserId, getUserInfo } from "../services/tiktokservice.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
@@ -11,52 +12,56 @@ router.get('/scrape-user-tiktoks', async ( req, res ) => {
 	const userObject = await getUserInfo(username);
 	const { userId } = userObject;
 	const { tiktoks, hasMore, newCursor } = await getTikTokByUserId(userId)
-	try {
-		const result = await TikTok.insertMany(tiktoks, { ordered: false });
-		res.send(result)
-	} catch ( e ) {
-		res.send(e.message)
-	}
+	const result = await TikTok.insertMany(tiktoks, { ordered: false });
+	res.send(result);
 
 });
 router.get('/scrape-userinfo', async ( req, res ) => {
 	const username = req.query.username;
 	const userObject = await getUserInfo(username);
+	const doc = await User.findOneAndUpdate({ _id: userObject.userId },
+		userObject,
+		{ upsert: true, new: true, runValidators: true }
+	)
 	res.send(userObject);
 })
 
 /* Database Queries */
-// Get All TikToks for a user in a database
-router.get('/user/tiktoks', async ( req, res ) => {
-	const { uniqueid } = req.query;
-	const tiktoks = await TikTok.findByAuthorUniqueId(uniqueid);
-	res.send(tiktoks);
-})
-
-// Search for a user's TikToks
+// Search Results Page
 router.get('/user/search', async ( req, res ) => {
 	const { uniqueid } = req.query;
-	const authors = await TikTok.findDistinctAuthorsByName(username);
-	res.send(authors);
+	console.log(uniqueid)
+	const users = await User.findByPattern(uniqueid);
+	res.send(users);
 })
 
-// Get Top Viewed TikToks for a user
+
+// Details Page
+/* Top TikToks For A  User */
 router.get('/user/tiktoks-top', async ( req, res ) => {
-	const {uniqueId} = req.query;
+	const { uniqueid } = req.query;
 	const tiktoks = await TikTok.findByAuthorUniqueIdSorted(username)
 	res.send(tiktoks);
 })
 
-// Get Average Views Monthly TikToks
+
+router.get('/user/userinfo', async ( req, res ) => {
+	const { uniqueId } = req.query;
+	const tiktoks = await TikTok.findByAuthorUniqueIdSorted(username)
+	res.send(tiktoks);
+})
+
+
+// Details Page Chart
 router.get('/user/tiktoks-average-views', async ( req, res ) => {
-	const { uniqueid} = req.query;
+	const { uniqueid } = req.query;
 	const averagePlayCountByMonth = await TikTok.getAveragePlayCountByMonthForUniqueId(username);
 	res.send(averagePlayCountByMonth);
 })
-
+// Details Page Chart
 // Get Total Views Monthly
 router.get('/user/tiktoks-total-views', async ( req, res ) => {
-	const { uniqueid} = req.query;
+	const { uniqueid } = req.query;
 	const totalPlayCountByMonth = await TikTok.getTotalPlayCountByMonthForUniqueId(username);
 	res.send(totalPlayCountByMonth);
 })
