@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-const mongoUrl = "mongodb+srv://ajervin:dunk7onu@maincluster.hhnou26.mongodb.net/?retryWrites=true&w=majority&appName=MainCluster";
+const mongoUrl = "mongodb+srv://ajervin:dunk7onu@maincluster.hhnou26.mongodb.net/tiktokdatabase?retryWrites=true&w=majority&appName=MainCluster";
 
 
 mongoose.connect(mongoUrl, { });

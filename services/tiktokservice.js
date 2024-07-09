@@ -3,11 +3,12 @@ import axios from 'axios'
 import SignTok from "signtok";
 import querystring from "querystring";
 import { convertUnixTimestamp } from "../utils/helpers.js";
+import { uploadImage } from "../utils/imageupload.js";
 
 
 // Stable msToken that seems to work consistently
 const msToken = "YkuQ8qGabOtryQ7k8cFpR9supZ_XCgRM2oY0mwT3xBs73yQ8vj74DPmFtX1eF83f-Zq9tTZtG0CvBeiHmjonGRVjYn5zBEQME21ytbSDbgRXpbl5LONHaysuwms9FBYwks3JTeeluaic"
-const COUNT = 10
+const COUNT = 20
 
 /**
  * Get all tiktoks associated to a user id
@@ -34,15 +35,17 @@ export async function getTikTokByUserId( userId = "MS4wLjABAAAAL4SwMC2HkCB1V8GUN
 	// Scrape TikTok Data
 	const res = await tiktokRequest({ userAgent, xTtParams, signed_url });
 	const { data } = res;
-	const tiktoks = data.itemList.map(doc => {
+	let tiktoks = data.itemList.map(async doc => {
+		const dynamicCover = await uploadImage(doc.video.cover, doc.id);
+		doc.video.dynamicCover = dynamicCover;
 		return {
 			...doc,
 			_id: doc.id,
-			createdAt: convertUnixTimestamp(doc.createTime)
+			createdAt: convertUnixTimestamp(doc.createTime),
+
 		};
 	})
-
-	// await addItemListToDatabase(data.itemList)
+	tiktoks = await Promise.all(tiktoks);
 	return { newCursor: data.cursor, hasMore: data.hasMore, tiktoks }
 }
 
@@ -50,7 +53,6 @@ export async function getTikTokByUserId( userId = "MS4wLjABAAAAL4SwMC2HkCB1V8GUN
 /**
  * Get userInfo of a TikTok User
  * @param username secUid of the user you want to scrape
-
  */
 export async function getUserInfo( username = 'avajustin' ) {
 	const apiUrl = `https://www.tiktok.com/api/user/detail?`
@@ -70,8 +72,8 @@ export async function getUserInfo( username = 'avajustin' ) {
 	const { userInfo } = data;
 	const { stats, user } = userInfo;
 	const { avatarLarger, nickname, signature: sig, uniqueId, secUid } = user
-	const userObject = { ...stats, avatarLarger, nickname, sig, uniqueId, userId: secUid }
-
+	const avatarUrl = await uploadImage(avatarLarger, uniqueId);
+	const userObject = { ...stats, avatarLarger: avatarUrl, nickname, sig, uniqueId, userId: secUid }
 	return userObject
 }
 

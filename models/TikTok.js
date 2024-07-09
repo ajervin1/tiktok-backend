@@ -37,7 +37,7 @@ TikTokSchema.statics.findByAuthorUniqueId = function(uniqueId) {
 };
 // Top 3 Tiktoks
 TikTokSchema.statics.findByAuthorUniqueIdSorted = function(uniqueId) {
-	return this.find({ 'author.uniqueId': uniqueId }).sort({ 'stats.playCount': -1 }).limit(3);
+	return this.find({ 'author.uniqueId': uniqueId }).sort({ 'stats.playCount': -1 }).limit(10);
 };
 // Search Function
 TikTokSchema.statics.findDistinctAuthorsByName = function(name) {
@@ -88,8 +88,13 @@ TikTokSchema.statics.getAveragePlayCountByMonthForUniqueId = function(uniqueId) 
 		{
 			$project: {
 				_id: 0,
-				month: "$_id.month",
-				year: "$_id.year",
+				date: {
+					$dateFromParts: {
+						year: "$_id.year",
+						month: "$_id.month",
+						day: 1
+					}
+				},
 				averagePlayCount: 1
 			}
 		}
@@ -121,8 +126,13 @@ TikTokSchema.statics.getTotalPlayCountByMonthForUniqueId = function(uniqueId) {
 		{
 			$project: {
 				_id: 0,
-				month: "$_id.month",
-				year: "$_id.year",
+				date: {
+					$dateFromParts: {
+						year: "$_id.year",
+						month: "$_id.month",
+						day: 1
+					}
+				},
 				totalPlayCount: 1
 			}
 		}
