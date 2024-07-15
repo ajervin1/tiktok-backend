@@ -13,7 +13,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(morgan('dev')); // Use Morgan with 'dev' format
 app.use(cors());
-app.use('/', routes)
+app.use('/', routes);
+app.get('/', (req,res) => {
+	res.send("hell world")
+})
 
 app.listen(8000, () => {
 	console.log('Server started on port 8000');
