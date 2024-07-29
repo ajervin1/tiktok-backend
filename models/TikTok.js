@@ -39,6 +39,9 @@ TikTokSchema.statics.findByAuthorUniqueId = function(uniqueId) {
 TikTokSchema.statics.findByAuthorUniqueIdSorted = function(uniqueId) {
 	return this.find({ 'author.uniqueId': uniqueId }).sort({ 'stats.playCount': -1 }).limit(10);
 };
+TikTokSchema.statics.getAllUniqueIds = function() {
+  return this.distinct('author.uniqueId');
+};
 // Search Function
 TikTokSchema.statics.findDistinctAuthorsByName = function(name) {
 	return this.aggregate([

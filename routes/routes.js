@@ -44,6 +44,15 @@ router.get('/user/search', async ( req, res ) => {
 	res.send(users);
 })
 
+router.get('/all-unique-ids', async (req, res) => {
+  const uniqueIds = await TikTok.getAllUniqueIds();
+  res.send(uniqueIds);
+});
+router.get('/users', async (req, res) => {
+  const users = await User.find({});
+  res.send(users);
+});
+
 
 // Details Page
 /* Top TikToks For A  User */
