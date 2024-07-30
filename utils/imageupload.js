@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-export async function uploadImage(imageUrl,imageId) {
+export async function uploadImage( imageUrl, imageId ) {
 	// Configuration
 	cloudinary.config({
 		cloud_name: 'dqkacquke',
@@ -10,10 +10,11 @@ export async function uploadImage(imageUrl,imageId) {
 
 	// Upload an image
 	const uploadResult = await cloudinary.uploader.upload(imageUrl, {
+
 			public_id: imageId,
 		}
 	)
-	const uploadUrl = uploadResult.url;
+	const uploadUrl = uploadResult.secure_url;
 	// Save this url to database
 	return uploadUrl
 }

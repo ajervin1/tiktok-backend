@@ -11,7 +11,6 @@ import routes from './routes/routes.js'
 const app = express();
 
 app.use(bodyParser.json());
-app.use(morgan('dev')); // Use Morgan with 'dev' format
 app.use(cors());
 app.use('/', routes);
 app.get('/', (req,res) => {
